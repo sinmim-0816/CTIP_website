@@ -1,20 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
+import CoursePage from './src/screens/CoursePage';
+import SideBar from './src/components/SideBar';
+import Header from './src/components/Header';
+
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <View style={styles.root}>
+      
+      
+      <View style={styles.container}>
+        <SideBar />
+        
+        {/* Main Content Area */}
+        <View style={styles.content}>
+          {/* <Header />   */}
+          <CoursePage />
+        </View>
+      </View>
+
       <StatusBar style="auto" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  root: {
+    flex: 1, 
+    padding:0,
+    margin:0
   },
+  container: {
+    flex: 1,           
+    flexDirection: 'row', 
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
+    backgroundColor:"#f2f2f2"
+  }
 });
