@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const CoursePage = () => {
+const AdminCourse = () => {
     return (
         <View style={styles.container}>
             <View style={styles.courseContainer}>
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CoursePage;
+export default AdminCourse;

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-import CoursePage from './src/screens/CoursePage';
+import AdminCourse from './src/screens/AdminCourse';
 import SideBar from './src/components/SideBar';
 import Header from './src/components/Header';
 
@@ -16,7 +16,7 @@ export default function App() {
         {/* Main Content Area */}
         <View style={styles.content}>
           {/* <Header />   */}
-          <CoursePage />
+          <AdminCourse/>
         </View>
       </View>
 
