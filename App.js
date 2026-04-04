@@ -3,19 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import AdminCourse from './src/screens/AdminCourse';
 import SideBar from './src/components/SideBar';
-import Header from './src/components/Header';
 
 export default function App() {
   return (
     <View style={styles.root}>
-      
-      
       <View style={styles.container}>
         <SideBar />
         
         {/* Main Content Area */}
         <View style={styles.content}>
-          {/* <Header />   */}
           <AdminCourse/>
         </View>
       </View>
