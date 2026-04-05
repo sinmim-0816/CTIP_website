@@ -14,7 +14,7 @@ const OutlineBar=({course, onSelectPage})=>{
             {/* Modules */}
             {course.modules.map(module => (
                 <View key={module.moduleId}>
-                    <Text>{module.title}</Text>
+                    <Text>Module {module.moduleId}: {module.title}</Text>
                     {module.pages.map(page=>(
                         <Pressable key={page.pageId} onPress={()=> onSelectPage({type: 'page', module, page})}>
                             <Text>{page.title}</Text>
@@ -27,7 +27,14 @@ const OutlineBar=({course, onSelectPage})=>{
 }
 
 const styles=StyleSheet.create({
-
+    outlinebar:{
+        maxWidth:'220px',
+        border:'1px solid black',
+        minHeight:'100vh',
+        userSelect:'none',
+        paddingHorizontal:20,
+        flex:1
+    }
 });
 
 export default OutlineBar;

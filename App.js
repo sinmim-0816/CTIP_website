@@ -8,6 +8,7 @@ import { useRoute } from "@react-navigation/native";
 import AdminCourse from './src/screens/AdminCourse';
 import SideBar from './src/components/SideBar';
 import EditCourseDetails from './src/screens/EditCourseDetail';
+import UserDashboard from './src/screens/UserDashboard';
 
 // Define
 const Stack=createStackNavigator();
@@ -17,13 +18,14 @@ export default function App() {
     <NavigationContainer>
       <View style={styles.root}>
         <View style={styles.container}>
-          <SideBar />
+          {/* <SideBar /> */}
           
           {/* Main Content Area */}
           <View style={styles.content}>
-            <Stack.Navigator initialRouteName="Course Management">
+            <Stack.Navigator initialRouteName="User Dashboard">
               <Stack.Screen name="Course Management" component={AdminCourse} options={{headerShown: false}}/>
               <Stack.Screen name="Course Details" component={EditCourseDetails}/>
+              <Stack.Screen name="User Dashboard" component={UserDashboard} options={{headerShown: false}}/>
             </Stack.Navigator>
           </View>
         </View>

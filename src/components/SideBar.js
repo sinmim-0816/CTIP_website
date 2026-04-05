@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     sidebar:{
         maxWidth:'220px',
         minHeight:'100vh',
-        transition:'all 0.3s ease',
         userSelect:'none',
         paddingHorizontal:20,
         flex:1,
