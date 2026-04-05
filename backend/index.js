@@ -170,14 +170,34 @@ app.get('/api/courses/:id', (req,res)=>{
 // ---------------------------------------------------------------------
 // Dummy todo data
 const todos = [
-  { id: 1, title: "Finish Module 1", course: "Basic First Aid" },
-  { id: 2, title: "Finish Module 2", course: "CPR Training" }
+  { id: 1, title: "Finish Module 1", course: "Basic First Aid", date: "2026-06-30", completed: false },
+  { id: 2, title: "Finish Module 2", course: "CPR Training", date: "2027-08-05", completed: false }
 ];
 
 // Route to get all todos
 app.get('/api/todos', (req, res) => {
   res.json(todos);
 });
+// ---------------------------------------------------------------------
+
+
+// Dummy user progress data
+const userType = 'user'; // or 'admin'
+
+app.get('/api/userType', (req, res) => {
+  res.json(userType);
+});
+
+const progress = [
+  { id: 1, course: 'Basic First Aid', progress: 0.7 },
+  { id: 2, course: 'CPR Training', progress: 0.4 },
+];
+
+// Route to get all todos
+app.get('/api/progress', (req, res) => {
+  res.json(progress);
+});
+
 // ---------------------------------------------------------------------
 
 // Start Over
