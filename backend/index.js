@@ -7,14 +7,36 @@ app.use('/images', express.static('public'));
 
 // ---------------------------------------------------------------------
 // Dummy course data
-const courses=[
+const courses = [
     {
         id: 1,
-        image:'http://localhost:5000/images/first_aid.png',
+        image: 'http://localhost:5000/images/first_aid.png',
         courseTitle: 'Basic First Aid',
         numModules: 15,
         duration: '15 hours 30 mins',
-        expiryDate: '05-08-2027'
+        expiryDate: '05-08-2027',
+        description: 'Learn the fundamentals of first aid, including wound care, CPR basics, and emergency response.',
+        modules: [
+        {
+            moduleId: 1,
+            title: 'Introduction to First Aid',
+            pages: [
+            {
+                pageId: 1,
+                title: 'Overview',
+                sections: [
+                { type: 'text', content: 'Welcome to Basic First Aid.' },
+                { type: 'quiz', question: 'What is the emergency number?', options: ['911', '999'], answer: '999' }
+                ]
+            },
+            {
+                pageId: 2,
+                title: 'Safety Guidelines',
+                sections: [] 
+            }
+            ]
+        }
+        ]
     },
     {
         id: 2,
@@ -22,7 +44,29 @@ const courses=[
         courseTitle: 'CPR Training',
         numModules: 10,
         duration: '8 hours',
-        expiryDate: '2026-06-30'
+        expiryDate: '2026-06-30',
+        description: 'Focused training on CPR techniques for adults, children, and infants.',
+        modules: [
+        {
+            moduleId: 1,
+            title: 'Introduction to First Aid',
+            pages: [
+            {
+                pageId: 1,
+                title: 'Overview',
+                sections: [
+                { type: 'text', content: 'Welcome to Basic First Aid.' },
+                { type: 'quiz', question: 'What is the emergency number?', options: ['911', '999'], answer: '999' }
+                ]
+            },
+            {
+                pageId: 2,
+                title: 'Safety Guidelines',
+                sections: [] 
+            }
+            ]
+        }
+        ]
     }
 ];
 
