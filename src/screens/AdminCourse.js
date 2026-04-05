@@ -1,13 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput, Image, ImageBackground} from 'react-native';
-import {CopyPlus, Search, BookOpenText, Timer, CheckCheck} from 'lucide-react-native';
+import { View, Text, StyleSheet, Pressable, TextInput,  ImageBackground, ScrollView} from 'react-native';
+import {CopyPlus, Search, SlidersHorizontal} from 'lucide-react-native';
 
+// Import Components
 import CourseCard from '../components/CourseCard.js';
 
 
 const AdminCourse = () => {
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
+            {/* Background Image */}
             <ImageBackground 
                 source={require('../../assets/forest.png')}
                 style={styles.backgroundImage}
@@ -26,20 +27,27 @@ const AdminCourse = () => {
                     </Pressable>
                 </View>
             </ImageBackground>
-            {/* Search */}
-            <View style={styles.search}>
-                <Search size={18}/>
-                <TextInput style={styles.input} placeholder='Search...' placeholderTextColor="#8f8f8f"/>
+
+            {/* Search and Filter */}
+            <View style={styles.toolbar}>
+                <View style={styles.search}>
+                    <Search size={18}/>
+                    <TextInput style={styles.input} placeholder='Search...' placeholderTextColor="#8f8f8f"/>
+                </View>
+                <Pressable style={({ hovered }) => [
+                        styles.filter,
+                        hovered && styles.filterHover, 
+                    ]}>
+                    <SlidersHorizontal/>
+                </Pressable>
             </View>
 
             {/* Course Card */}
             <View style={styles.cardContainer}>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins"/>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins"/>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins"/>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins"/>
+                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins" expiry={"05-08-2027"}/>
+                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins" expiry={"05-08-2027"}/>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -47,6 +55,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        marginHorizontal:10
     },
     title: {
         fontSize: 24,
@@ -65,7 +74,7 @@ const styles = StyleSheet.create({
         borderRadius:20,
         flexDirection:'row',
         justifyContent:'space-between',
-        
+        userSelect:'none'
     },
     backgroundImage:{
         width:'100%',
@@ -96,9 +105,7 @@ const styles = StyleSheet.create({
         gap:7,
         borderWidth:1,
         borderColor:'#8f8f8f',
-        maxWidth:300,
-        marginTop:20,
-        marginLeft:10,
+        minWidth:300,
         padding:5,
         backgroundColor:'white',
         borderRadius:15,
@@ -111,11 +118,26 @@ const styles = StyleSheet.create({
     },
     cardContainer:{
         flexDirection:'row',
+        flexWrap:'wrap',
+        justifyContent:'flex-start',
         gap:30,
-        marginHorizontal:20,
+        marginTop:20, 
+    },
+    filter:{
+        flexDirection:'row',
+        paddingVertical:5,
+        paddingRight:10,
+        borderRadius:5,
+    },
+    filterHover:{
+        color:'#efab21'
+    },
+    toolbar:{
+        justifyContent:'space-between',
+        flexDirection:'row',
         marginTop:20,
-        
     }
+
 });
 
 export default AdminCourse;

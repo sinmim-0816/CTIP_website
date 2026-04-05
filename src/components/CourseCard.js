@@ -1,7 +1,7 @@
 import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
-import {BookOpenText, CheckCheck, Timer} from 'lucide-react-native'
+import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native'
 
-const CourseCard=({imagePath, courseTitle, numModules,duration})=>{
+const CourseCard=({imagePath, courseTitle, numModules,duration,expiry})=>{
     return (
         <View style={styles.card}>
             <Image source={imagePath} style={styles.courseImg} accessibilityLabel='Cover Photo of Course'/>
@@ -15,6 +15,10 @@ const CourseCard=({imagePath, courseTitle, numModules,duration})=>{
                 <Timer size={20}/>
                 <Text style={styles.DetailsText}>{duration}</Text>
             </View>
+            <View style={styles.courseDetails}>
+                <ClockAlert size={20}/>
+                <Text style={styles.DetailsText}>{expiry}</Text>
+            </View>
             <Pressable style={styles.Publishbtn}>
                 <CheckCheck/>
                 <Text>Published</Text>
@@ -25,12 +29,12 @@ const CourseCard=({imagePath, courseTitle, numModules,duration})=>{
 
 const styles=StyleSheet.create({
     card:{
-        flex:1,
         backgroundColor:"white",
         borderRadius:5,
-        paddingHorizontal:15,
+        paddingHorizontal:17,
         paddingVertical:10,
-        borderRadius:10
+        borderRadius:10,
+        maxWidth:300
     },
     courseImg:{
         width:250,
@@ -52,7 +56,8 @@ const styles=StyleSheet.create({
         alignContent:'center',
         padding:2,
         color:'#3e3e3e',
-        gap:5
+        gap:5,
+        marginBottom:3
     },
     DetailsText:{
         color:'#3e3e3e',
@@ -63,7 +68,7 @@ const styles=StyleSheet.create({
         gap:8,
         alignItems:'center',
         alignSelf:'center',
-        backgroundColor:'#ffc146',
+        backgroundColor:'#ffb116',
         borderRadius:10,
         paddingHorizontal:20,
         paddingVertical:8,
