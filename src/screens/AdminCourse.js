@@ -1,3 +1,4 @@
+import React,{useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput,  ImageBackground, ScrollView} from 'react-native';
 import {CopyPlus, Search, SlidersHorizontal} from 'lucide-react-native';
 
@@ -6,6 +7,16 @@ import CourseCard from '../components/CourseCard.js';
 
 
 const AdminCourse = () => {
+    const [courses, setCourses]=useState([]);
+
+    // Fetch courses from backend api
+    useEffect(()=>{
+        fetch('http://localhost:5000/api/courses')
+        .then(res=>res.json())
+        .then(data=>setCourses(data))
+        .catch(err=>console.error(err));
+    },[]);
+
     return (
         <ScrollView style={styles.container}>
             {/* Background Image */}
@@ -44,8 +55,17 @@ const AdminCourse = () => {
 
             {/* Course Card */}
             <View style={styles.cardContainer}>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins" expiry={"05-08-2027"}/>
-                <CourseCard imagePath={require('../../assets/first_aid.png')} courseTitle="Basic First Aid" numModules={15} duration="15 hours 30 mins" expiry={"05-08-2027"}/>
+                {courses.map(course=>(
+                    <CourseCard
+                        key={course.id}
+                        id={course.id}
+                        imagePath={{uri:course.image}}
+                        courseTitle={course.courseTitle}
+                        numModules={course.numModules}
+                        duration={course.duration}
+                        expiry={course.expiryDate}
+                    />
+                ))}
             </View>
         </ScrollView>
     );
@@ -88,14 +108,14 @@ const styles = StyleSheet.create({
         gap:8,
         alignItems:'center',
         alignSelf:'center',
-        backgroundColor:'#50984d',
+        backgroundColor:'#4a8947',
         borderRadius:50,
         color:'white',
         paddingHorizontal:23,
         paddingVertical:13,
     },
     btnHover:{
-        backgroundColor:'#4ba525fe'
+        backgroundColor:'#2f6618fe'
     },
     btnText:{
         color:'white'
