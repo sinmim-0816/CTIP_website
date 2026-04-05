@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import {LayoutDashboard, Book, ClipboardList, Flag, CreditCard,Bell, LogOut} from 'lucide-react-native'
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 const SideBar = () => {
+    const navigation=useNavigation();
     // Navigation Link
     const menuItems= [
-        {name:'Dashboard', icon: LayoutDashboard},
-        {name: 'Courses', icon: Book},
+        {name:'Dashboard', icon: LayoutDashboard, route:'User Dashboard'},
+        {name: 'Courses', icon: Book, route:'Course Management'},
         {name: 'Enrollment', icon: ClipboardList},
         {name:'Payment', icon: CreditCard},
         {name:'Abnormalies', icon: Flag},
@@ -32,6 +34,13 @@ const SideBar = () => {
                                     style={({hovered})=>[styles.menuItem, isActive && styles.activeIcon, !isActive && hovered && styles.hoverStyle]}
                                         onPress={() => {
                                         setActivePage(item.name);
+                                        navigation.dispatch(
+                                            CommonActions.reset({
+                                                index: 0,
+                                                routes: [{ name: item.route }],
+                                            })
+                                        );
+
                                     }}
                                 >
                                     <IconComponent style={styles.navIcon} />
@@ -74,6 +83,9 @@ const styles = StyleSheet.create({
         userSelect:'none',
         paddingHorizontal:20,
         flex:1,
+        borderRightColor:'#3f3f3f4d',
+        borderRightWidth:1,
+
     },
     link:{
         gap:15,

@@ -63,7 +63,7 @@ const AdminCourse = ({navigation}) => {
                         numModules={course.numModules}
                         duration={course.duration}
                         expiry={course.expiryDate}
-                        onPress={()=> navigation.navigate('Course Details', {selectedCourse: course})}
+                        onPress={()=> navigation.navigate('Course Details', {id:course.id})}
                     />
                 ))}
             </View>
@@ -161,3 +161,4 @@ const styles = StyleSheet.create({
 });
 
 export default AdminCourse;
+

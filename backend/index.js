@@ -22,17 +22,99 @@ const courses = [
             title: 'Introduction to First Aid',
             pages: [
             {
-                pageId: 1,
-                title: 'Overview',
+                pageId: 1.0,
+                title: 'Introduction',
                 sections: [
                 { type: 'text', content: 'Welcome to Basic First Aid.' },
                 { type: 'quiz', question: 'What is the emergency number?', options: ['911', '999'], answer: '999' }
                 ]
             },
             {
-                pageId: 2,
+                pageId: 1.1,
                 title: 'Safety Guidelines',
                 sections: [] 
+            }
+            ]
+        },
+        {
+            moduleId: 2,
+            title: 'Handling Cuts and Wounds',
+            pages: [
+            {
+                pageId: 2.0,
+                title: 'Introduction',
+                sections: [
+                { type: 'text', content: 'Clean the wound with antiseptic and cover with a bandage.' }
+                ]
+            },
+            {
+                pageId: 2.1,
+                title: 'Minor Cuts',
+                sections: [
+                { type: 'text', content: 'Clean the wound with antiseptic and cover with a bandage.' }
+                ]
+            },
+            {
+                pageId: 2.2,
+                title: 'Severe Bleeding',
+                sections: [
+                { type: 'text', content: 'Apply firm pressure and elevate the limb.' },
+                { type: 'quiz', question: 'What should you do first for severe bleeding?', options: ['Apply pressure', 'Wash wound'], answer: 'Apply pressure' }
+                ]
+            }
+            ]
+        },
+        {
+            moduleId: 3,
+            title: 'CPR Basics',
+            pages: [
+            {
+                pageId: 3.0,
+                title: 'Introduction',
+                sections: [
+                { type: 'text', content: 'Perform 30 compressions followed by 2 breaths.' }
+                ]
+            },
+            {
+                pageId: 3.1,
+                title: 'Adult CPR',
+                sections: [
+                { type: 'text', content: 'Perform 30 compressions followed by 2 breaths.' }
+                ]
+            },
+            {
+                pageId: 3.2,
+                title: 'Child CPR',
+                sections: [
+                { type: 'text', content: 'Use one hand for compressions and adjust depth.' }
+                ]
+            }
+            ]
+        },
+        {
+            moduleId: 4,
+            title: 'Fracture Management',
+            pages: [
+            {
+                pageId: 4.0,
+                title: 'Introduction',
+                sections: [
+                { type: 'text', content: 'Look for swelling, deformity, and pain.' }
+                ]
+            },
+            {
+                pageId: 4.1,
+                title: 'Identifying Fractures',
+                sections: [
+                { type: 'text', content: 'Look for swelling, deformity, and pain.' }
+                ]
+            },
+            {
+                pageId: 4.2,
+                title: 'Immobilization Techniques',
+                sections: [
+                { type: 'text', content: 'Use splints to immobilize the injured area.' }
+                ]
             }
             ]
         }
@@ -52,15 +134,15 @@ const courses = [
             title: 'Introduction to First Aid',
             pages: [
             {
-                pageId: 1,
-                title: 'Overview',
+                pageId: 1.0,
+                title: 'Introduction',
                 sections: [
                 { type: 'text', content: 'Welcome to Basic First Aid.' },
                 { type: 'quiz', question: 'What is the emergency number?', options: ['911', '999'], answer: '999' }
                 ]
             },
             {
-                pageId: 2,
+                pageId: 2.1,
                 title: 'Safety Guidelines',
                 sections: [] 
             }
