@@ -3,71 +3,29 @@ import { View, Text, StyleSheet, Pressable, TextInput,  ImageBackground, ScrollV
 import {CopyPlus, Search, SlidersHorizontal} from 'lucide-react-native';
 
 // Import Components
-import CourseCard from '../components/CourseCard.js';
+import OutlineBar from '../components/OutlineBar.js';
 
 
-const AdminCourse = () => {
-    const [courses, setCourses]=useState([]);
+const EditCourseDetail = ({route}) => {
+    const {selectedCourse: initialCourse}=route.params || {};
+    const [selectedCourse, setSelectedCourse]=useState(null);
+    const [selectedPage, setSelectedPage]=useState(null);
 
-    // Fetch courses from backend api
-    useEffect(()=>{
-        fetch('http://localhost:5000/api/courses')
-        .then(res=>res.json())
-        .then(data=>setCourses(data))
-        .catch(err=>console.error(err));
-    },[]);
 
     return (
-        <ScrollView style={styles.container}>
-            {/* Background Image */}
-            <ImageBackground 
-                source={require('../../assets/forest.png')}
-                style={styles.backgroundImage}
-            >
-                <View style={styles.courseContainer}>
-                    <View>
-                        <Text style={styles.description}>Here you can find all courses</Text>
-                        <Text style={styles.title}>All Courses</Text>
-                    </View>
-                    <Pressable style={({ hovered }) => [
-                            styles.btn,
-                            hovered && styles.btnHover, 
-                        ]}>
-                        <CopyPlus/>
-                        <Text style={styles.btnText}>Add Course</Text>
-                    </Pressable>
-                </View>
-            </ImageBackground>
+        <View style={styles.rowContainer}>
+            {/* Outlinebar */}
+            <OutlineBar course={selectedCourse} onSelectPage={setSelectedPage}/>
+            {/* Content */}
+            <ScrollView style={styles.container}>
+                {selectedPage?.type === 'page' ? (
+                    <Text>Editing: {selectedPage.page.title}</Text>
+                ) : (
+                    <Text>Welcome to {selectedCourse?.courseTitle} Overview</Text>
+                )}
+            </ScrollView>
+        </View>
 
-            {/* Search and Filter */}
-            <View style={styles.toolbar}>
-                <View style={styles.search}>
-                    <Search size={18}/>
-                    <TextInput style={styles.input} placeholder='Search...' placeholderTextColor="#8f8f8f"/>
-                </View>
-                <Pressable style={({ hovered }) => [
-                        styles.filter,
-                        hovered && styles.filterHover, 
-                    ]}>
-                    <SlidersHorizontal/>
-                </Pressable>
-            </View>
-
-            {/* Course Card */}
-            <View style={styles.cardContainer}>
-                {courses.map(course=>(
-                    <CourseCard
-                        key={course.id}
-                        id={course.id}
-                        imagePath={{uri:course.image}}
-                        courseTitle={course.courseTitle}
-                        numModules={course.numModules}
-                        duration={course.duration}
-                        expiry={course.expiryDate}
-                    />
-                ))}
-            </View>
-        </ScrollView>
     );
 }
 
@@ -160,4 +118,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AdminCourse;
+export default EditCourseDetail;

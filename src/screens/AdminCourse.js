@@ -5,8 +5,7 @@ import {CopyPlus, Search, SlidersHorizontal} from 'lucide-react-native';
 // Import Components
 import CourseCard from '../components/CourseCard.js';
 
-
-const AdminCourse = () => {
+const AdminCourse = ({navigation}) => {
     const [courses, setCourses]=useState([]);
 
     // Fetch courses from backend api
@@ -64,6 +63,7 @@ const AdminCourse = () => {
                         numModules={course.numModules}
                         duration={course.duration}
                         expiry={course.expiryDate}
+                        onPress={()=> navigation.navigate('Course Details', {selectedCourse: course})}
                     />
                 ))}
             </View>

@@ -1,10 +1,10 @@
 import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
 import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native'
 
-const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry})=>{
+const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry, onPress})=>{
     return (
         // Title need change to course ID later
-        <Pressable style={styles.card} onPress={()=> navigation.navigate('CourseDetails', {title: id})}>
+        <Pressable style={styles.card} onPress={onPress}>
             <Image source={imagePath} style={styles.courseImg} accessibilityLabel='Cover Photo of Course'/>
             <Text style={styles.CourseTitle}>{courseTitle}</Text>
             

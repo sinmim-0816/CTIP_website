@@ -68,6 +68,7 @@ const courses = [
         ]
     }
 ];
+
 // Route to get all courses
 app.get('/api/courses', (req,res)=>{
     res.json(courses);

@@ -1,26 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useRoute } from "@react-navigation/native";
 
 // Import Screens
 import AdminCourse from './src/screens/AdminCourse';
 import SideBar from './src/components/SideBar';
 import EditCourseDetails from './src/screens/EditCourseDetail';
 
+// Define
+const Stack=createStackNavigator();
+
 export default function App() {
   return (
-    <View style={styles.root}>
-      <View style={styles.container}>
-        <SideBar />
-        
-        {/* Main Content Area */}
-        <View style={styles.content}>
-          {/* <AdminCourse/> */}
-          <EditCourseDetails/>
+    <NavigationContainer>
+      <View style={styles.root}>
+        <View style={styles.container}>
+          <SideBar />
+          
+          {/* Main Content Area */}
+          <View style={styles.content}>
+            <Stack.Navigator initialRouteName="Course Management">
+              <Stack.Screen name="Course Management" component={AdminCourse} options={{headerShown: false}}/>
+              <Stack.Screen name="Course Details" component={EditCourseDetails}/>
+            </Stack.Navigator>
+          </View>
         </View>
-      </View>
 
-      <StatusBar style="auto" />
-    </View>
+        <StatusBar style="auto" />
+      </View>
+    </NavigationContainer>
+    
   );
 }
 
