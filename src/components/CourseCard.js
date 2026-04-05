@@ -1,9 +1,10 @@
 import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
 import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native'
 
-const CourseCard=({imagePath, courseTitle, numModules,duration,expiry})=>{
+const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry})=>{
     return (
-        <View style={styles.card}>
+        // Title need change to course ID later
+        <Pressable style={styles.card} onPress={()=> navigation.navigate('CourseDetails', {title: id})}>
             <Image source={imagePath} style={styles.courseImg} accessibilityLabel='Cover Photo of Course'/>
             <Text style={styles.CourseTitle}>{courseTitle}</Text>
             
@@ -23,7 +24,7 @@ const CourseCard=({imagePath, courseTitle, numModules,duration,expiry})=>{
                 <CheckCheck/>
                 <Text>Published</Text>
             </Pressable>
-        </View>
+        </Pressable>
     )
 }
 
