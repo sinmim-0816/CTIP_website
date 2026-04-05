@@ -1,0 +1,74 @@
+import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
+import {BookOpenText, CheckCheck, Timer} from 'lucide-react-native'
+
+const CourseCard=({imagePath, courseTitle, numModules,duration})=>{
+    return (
+        <View style={styles.card}>
+            <Image source={imagePath} style={styles.courseImg} accessibilityLabel='Cover Photo of Course'/>
+            <Text style={styles.CourseTitle}>{courseTitle}</Text>
+            
+            <View style={styles.courseDetails}>
+                <BookOpenText size={20}/>
+                <Text style={styles.DetailsText}>{numModules} Modules</Text>
+            </View>
+            <View style={styles.courseDetails}>
+                <Timer size={20}/>
+                <Text style={styles.DetailsText}>{duration}</Text>
+            </View>
+            <Pressable style={styles.Publishbtn}>
+                <CheckCheck/>
+                <Text>Published</Text>
+            </Pressable>
+        </View>
+    )
+}
+
+const styles=StyleSheet.create({
+    card:{
+        flex:1,
+        backgroundColor:"white",
+        borderRadius:5,
+        paddingHorizontal:15,
+        paddingVertical:10,
+        borderRadius:10
+    },
+    courseImg:{
+        width:250,
+        height:180,
+        resizeMode:'contain',
+        alignSelf:'center'
+    },
+    CourseTitle:{
+        borderBottomColor:'#8f8f8f',
+        borderBottomWidth:1,
+        fontSize:19,
+        paddingVertical:10,
+        marginBottom:10,
+        textAlign:'center',
+        fontWeight:'bold'
+    },
+    courseDetails:{
+        flexDirection:'row',
+        alignContent:'center',
+        padding:2,
+        color:'#3e3e3e',
+        gap:5
+    },
+    DetailsText:{
+        color:'#3e3e3e',
+        fontSize:14
+    },
+    Publishbtn:{
+        flexDirection:'row',
+        gap:8,
+        alignItems:'center',
+        alignSelf:'center',
+        backgroundColor:'#ffc146',
+        borderRadius:10,
+        paddingHorizontal:20,
+        paddingVertical:8,
+        marginTop:15,
+    },
+});
+
+export default CourseCard;
