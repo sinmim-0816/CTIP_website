@@ -5,6 +5,7 @@ const app=express();
 app.use(cors());
 app.use('/images', express.static('public'));
 
+// ---------------------------------------------------------------------
 // Dummy course data
 const courses=[
     {
@@ -39,6 +40,19 @@ app.get('/api/courses/:id', (req,res)=>{
     }
     res.json(course);
 });
+
+// ---------------------------------------------------------------------
+// Dummy todo data
+const todos = [
+  { id: 1, title: "Finish Module 1", course: "Basic First Aid" },
+  { id: 2, title: "Finish Module 2", course: "CPR Training" }
+];
+
+// Route to get all todos
+app.get('/api/todos', (req, res) => {
+  res.json(todos);
+});
+// ---------------------------------------------------------------------
 
 // Start Over
 const PORT =5000;

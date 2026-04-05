@@ -1,5 +1,5 @@
 import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
-import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native'
+import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native';
 
 const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry})=>{
     return (
