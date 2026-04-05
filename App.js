@@ -1,18 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-import AdminCourse from './src/screens/AdminCourse';
-import SideBar from './src/components/SideBar';
+// import AdminCourse from './src/screens/AdminCourse';
+// import SideBar from './src/components/SideBar';
+import UserDashboard from './src/screens/UserDashboard';
 
 export default function App() {
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <SideBar />
+        {/* <SideBar /> */}
         
         {/* Main Content Area */}
         <View style={styles.content}>
-          <AdminCourse/>
+          <UserDashboard/>
         </View>
       </View>
 
