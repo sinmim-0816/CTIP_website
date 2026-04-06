@@ -262,6 +262,47 @@ app.post('/api/courses/:id/modules/:moduleId/pages', (req,res)=>{
     res.json(newPage);
 })
 
+// Route to delete a module
+app.delete('/api/courses/:id/modules/:moduleId',(req,res)=>{
+    const courseId=parseInt(req.params.id);
+    const moduleId=parseInt(req.params.moduleId);
+    const course=courses.find(c=>c.id===courseId);
+    if(!course){
+        return res.status(404).json({message:'Course not found'});
+    }
+    const module=course.modules.find(m=>m.moduleId===moduleId);
+    if(!module){
+        return res.status(404).json({message:'Module not found'});
+    }
+    course.modules=course.modules.filter(m=>m.moduleId !== moduleId);
+    res.json({message: 'Module deleted successfully', deletedModule: module})
+})
+
+// Route to delete a page
+app.delete('/api/courses/:id/modules/:moduleId/pages/:pageId', (req, res) => {
+    const courseId = parseInt(req.params.id);
+    const moduleId = parseInt(req.params.moduleId);
+    const pageId = req.params.pageId; 
+    const course = courses.find(c => c.id === courseId);
+    if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+    }
+    const module = course.modules.find(m => m.moduleId === moduleId);
+    if (!module) {
+        return res.status(404).json({ message: 'Module not found' });
+    }
+    const pageExists = module.pages.find(p => String(p.pageId) === String(pageId));
+    if (!pageExists) {
+        return res.status(404).json({ message: 'Page not found' });
+    }
+    module.pages = module.pages.filter(p => String(p.pageId) !== String(pageId));
+    res.json({ 
+        message: 'Page deleted successfully', 
+        deletedPageId: pageId,
+        updatedPages: module.pages 
+    });
+});
+
 // ---------------------------------------------------------------------
 // Dummy todo data
 const todos = [
@@ -303,4 +344,4 @@ app.listen(PORT, ()=>{
 })
 
 
-// delete module n need confirmation dialog, delete page, change order, delete empty section
+// change order, delete empty section

@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import {View, Text, StyleSheet, Pressable, FlatList,TextInput} from 'react-native';
-import {Plus, ChevronRight, ChevronDown,Search} from 'lucide-react-native';
+import {Plus, ChevronRight, ChevronDown,Search, Trash2} from 'lucide-react-native';
 
 const OutlineBar=({course, onSelectPage, editable})=>{
     // Set State
@@ -159,6 +159,65 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         }
     }
 
+    const handleDeleteModule=async(moduleId)=>{
+        const confirmed=window.confirm(`Are you sure you want to delete this module and all its pages?`);
+        if(!confirmed){
+            return;
+        }
+        try{
+            await fetch(`http://localhost:5000/api/courses/${course.id}/modules/${moduleId}`,{
+                method:'DELETE',
+            });
+
+            setModules(prev=>prev.filter(m=>m.moduleId!==moduleId));
+            setNewSectons(prev=>prev.filter(s=>s.moduleId !== moduleId));
+        }catch(err){
+            console.error('Failed to delete module',err);
+        }
+    }
+
+    const handleDeletePage = async (moduleId, pageId) => {
+        const confirmed = window.confirm(`Are you sure you want to delete this page?`);
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/courses/${course.id}/modules/${moduleId}/pages/${pageId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                console.error('Server error during deletion');
+                return;
+            }
+
+            // Logic to update the list
+            const filterPage = (prevList) => 
+                prevList.map((m) => {
+                    // Ensure we compare IDs correctly (cast both to String to be safe)
+                    if (String(m.moduleId) === String(moduleId)) {
+                        return { 
+                            ...m, 
+                            pages: m.pages.filter((p) => String(p.pageId) !== String(pageId)) 
+                        };
+                    }
+                    return m;
+                });
+
+            // Use the EXACT state setter names you defined at the top of your component
+            setModules(prev => filterPage(prev));
+            
+            // Double check this spelling: was it setNewSections or setNewSectons?
+            setNewSectons(prev => filterPage(prev)); 
+
+            if (selectedItem?.page?.pageId === pageId) {
+                setSelectedItem({ type: 'overview' });
+            }
+
+        } catch (err) {
+            console.error('Failed to delete page:', err);
+        }
+    };
+
     return(
         <View style={styles.outlinebar}>
             {/* Search Component */}
@@ -202,6 +261,8 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                                     setEditingItem({type:'module', id:module.moduleId});
                                 };
                                 }}
+                                onMouseEnter={()=>setHoveredItem({type:'module', id:module.moduleId})}
+                                onMouseLeave={()=>setHoveredItem(null)}
                               >
                             <Text style={styles.moduleTitle}>Module {module.moduleId}:{" "} 
                                 {/* Add New Section (blank title) */}
@@ -229,7 +290,13 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                                 )}  
 
                             </Text>
-                            {expandedModule === module.moduleId ? <ChevronDown/> : <ChevronRight/>}
+                            {expandedModule === module.moduleId ? <ChevronDown size={15}/> : <ChevronRight size={15}/>}
+                            {/* Delete Course Icon */}
+                            {editable && hoveredItem?.type==='module' && hoveredItem?.id===module.moduleId && (
+                                <Pressable onPress={()=>handleDeleteModule(module.moduleId)}>
+                                    <Trash2 size={16}/>
+                                </Pressable>
+                            )}
                         </Pressable>
                         
                         {/* Show Expanded Pages */}
@@ -259,6 +326,8 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                                                 setEditingItem({ type: 'page', moduleId: module.moduleId, pageId: page.pageId });
                                             }
                                         }}
+                                        onMouseEnter={()=> setHoveredItem({type:'page', moduleId: module.moduleId, pageId: page.pageId})}
+                                        
                                         >
                                             <Text>{typeof page.pageId === 'number' ? page.pageId.toFixed(1) : page.pageId}: {" "} 
                                                 {editable && editingItem?.type === 'page' && editingItem.pageId === page.pageId ? (
@@ -269,7 +338,16 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                                                     onBlur={(e) => handlePageUpdate(module.moduleId, page.pageId, e.nativeEvent.text)}
                                                 />
                                             ) : (
-                                                <Text>{page.title}</Text>
+                                                <View style={styles.pageBlock}>
+                                                    <Text>{page.title} </Text>
+                                                    {/* Trash icon for page */}
+                                                    {editable && hoveredItem?.type==='page' && hoveredItem?.pageId===page.pageId && (
+                                                        <Pressable onPress={()=>handleDeletePage(module.moduleId,page.pageId)}>
+                                                            <Trash2 size={16}/>
+                                                        </Pressable>
+                                                    )}
+                                                </View>
+                                                
                                             )}
                                             </Text>
                                         </Pressable>
@@ -315,11 +393,13 @@ const styles=StyleSheet.create({
         flexDirection:'row',
         minHeight:'50px',
         alignItems:'center',
-        paddingHorizontal:20,
+        paddingRight:10,
+        paddingLeft:15,
         paddingVertical:15,
+        justifyContent:'space-between'
     },
     moduleTitle:{
-        minWidth:'165px',
+        width:'175px',
     },
     search:{
         flexDirection:'row',
@@ -374,6 +454,11 @@ const styles=StyleSheet.create({
     PageSection:{
         paddingHorizontal:30,
         paddingVertical:6,
+    },
+    pageBlock:{
+        flexDirection:'row',
+        justifyContent:"space-between",
+        width:'150px'
     }
 });
 
