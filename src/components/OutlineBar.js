@@ -9,7 +9,8 @@ const OutlineBar=({course, onSelectPage, editable})=>{
     const [hoveredItem, setHoveredItem]=useState(null);
     const [newSections, setNewSectons]=useState([]);
     const [editingItem, setEditingItem]=useState(null);
-    const allModules=[...course.modules, ...newSections];
+    const [modules, setModules]=useState(course.modules);
+    const allModules=[...modules, ...newSections];
 
     if(!course){
         return;
@@ -67,9 +68,13 @@ const OutlineBar=({course, onSelectPage, editable})=>{
     };
 
     const handleModuleUpdate=async(moduleId, newTitle)=>{
-        setEditingItem(null);
+        if(!newTitle.trim()){
+            setEditingItem(null);
+            return;
+        }
+        setModules(prev=>prev.map(m=>m.moduleId === moduleId ? {...m,title:newTitle} : m))
         setNewSectons(prev=>prev.map(s=>(s.moduleId===moduleId ? {...s, title:newTitle} :s)));
-
+        setEditingItem(null);
         try{
             await fetch(`http://localhost:5000/api/courses/${course.id}/modules/${moduleId}`,{
                 method:'PUT',
@@ -80,6 +85,72 @@ const OutlineBar=({course, onSelectPage, editable})=>{
             console.error('Failed to update module:', err);
         }
     };
+
+    const handleAddPage=(moduleId)=>{
+        setNewSectons(prev=>prev.map(m=>{
+            if(m.moduleId===moduleId){
+                const existingCount=m.pages.length;
+                const nextIndex=existingCount;
+                const newPageId=`${moduleId}.${nextIndex}`;
+
+                return{
+                    ...m, pages:[...m.pages, {pageId: newPageId, title:''}]
+                };
+            }
+            return m;
+        }
+        ));
+    };
+
+    const handlePageBlur=async(moduleId, pageId, value)=>{
+        setNewSectons(prev=> 
+            prev.map(m=>
+                m.moduleId===moduleId
+                ? {
+                    ...m, pages:m.pages.map(p=>
+                        p.pageId===pageId ? {...p,title:value} : p
+                    )
+                }
+                :m
+            )
+        );
+
+        const newPage={pageId, title:value};
+        try{
+            await fetch(`http://localhost:5000/api/courses/${courseId}/modules/${moduleId}/pages`, {
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify(newPage),
+            });
+        } catch(err){
+            console.error('Failed to add page', err);
+        }
+    };
+
+    const handlePageUpdate=async(moduleId, pageId, newTitle)=>{
+        if(!newTitle.trim()){
+            setEditingItem(null);
+            return;
+        }
+        setModules(prev=>prev.map(m=>{
+            if(m.moduleId===moduleId){
+                return{
+                    ...m, pages:m.pages.map(p=>p.pageId === pageId ? {...p, title:newTitle} :p)
+                };
+            }
+            return m;
+        }));
+
+        try{
+            await fetch(`http://localhost:5000/api/courses/${courseId}/modules/${moduleId}/pages/${pageId}`,{
+                method:'PUT',
+                headers:{'Content-Type': 'application/json'},
+                body: JSON.stringify({title:newTitle}),
+            });
+        } catch(err){
+            console.error('Failed to update page:', err);
+        }
+    }
 
     return(
         <View style={styles.outlinebar}>
@@ -113,10 +184,16 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                         <Pressable style={[styles.moduleBlock,
                              (selectedItem?.type==='module' && selectedItem?.module?.moduleId===module.moduleId) ||
                              (selectedItem?.type==='page' && selectedItem?.module?.moduleId === module.moduleId)
-                              ? styles.selected : null]} onPress={()=> {handleSelect({type:'module', module}); toggleModule(module.moduleId);
+                              ? styles.selected : null]} 
+                              onPress={()=> {
+                                if(editingItem?.id === module.moduleId){
+                                    return;
+                                }
+                                handleSelect({type:'module', module}); toggleModule(module.moduleId);
                                 if(editable){
                                     setEditingItem({type:'module', id:module.moduleId});
-                                }}}
+                                };
+                                }}
                               >
                             <Text style={styles.moduleTitle}>Module {module.moduleId}:{" "} 
                                 {/* Add New Section (blank title) */}
@@ -148,15 +225,37 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                         </Pressable>
                         
                         {expandedModule === module.moduleId && (
-                            <View>
-                                {module.pages.map(page => (
+                            <View onMouseEnter={() => setHoveredItem({ type: 'page', moduleId: module.moduleId})}
+                                onMouseLeave={() => setHoveredItem(null)}>
+                                {module.pages.map(page => 
+                                    page.title==='' ? (
+                                        <TextInput
+                                            key={page.pageId}
+                                            style={styles.section}
+                                            placeholder="Enter page title..."
+                                            placeholderTextColor="#8f8f8f"
+                                            defaultValue={page.title}
+                                            onBlur={(e) => handlePageBlur(module.moduleId, page.pageId, e.nativeEvent.text)}
+                                        />
+                                    ):(
+                                        <Pressable
+                                        key={page.pageId} style={[styles.pageItem, selectedItem?.type==='page' && selectedItem?.page.pageId === page.pageId && styles.selectedPage]}
+                                        onPress={() => handleSelect({type:'page', module,page})}
+                                        >
+                                            <Text>{page.pageId.toFixed(1)}: {page.title}</Text>
+                                        </Pressable>
+                                    )
+                                )}
+                                {/* Show + Add New Page when hovering */}
+                                {editable && hoveredItem?.type === 'page' && hoveredItem.moduleId === module.moduleId && (
                                     <Pressable
-                                    key={page.pageId} style={[styles.pageItem, selectedItem?.type==='page' && selectedItem?.page.pageId === page.pageId && styles.selectedPage]}
-                                    onPress={() => handleSelect({type:'page', module,page})}
+                                    onPress={() => handleAddPage(module.moduleId)}
+                                    style={styles.pageItem}
                                     >
-                                        <Text>{page.pageId.toFixed(1)}: {page.title}</Text>
+                                        <Text style={styles.addPage}>+ Add New Page</Text>
                                     </Pressable>
-                                ))}
+                                )}
+
                             </View>
                         )}
                     </View>
@@ -188,7 +287,7 @@ const styles=StyleSheet.create({
         minHeight:'50px',
         alignItems:'center',
         paddingHorizontal:20,
-        paddingVertical:15
+        paddingVertical:15,
     },
     moduleTitle:{
         minWidth:'165px',
@@ -239,6 +338,9 @@ const styles=StyleSheet.create({
         paddingVertical:6,
         paddingHorizontal:10,
         marginTop:5
+    },
+    addPage:{
+        color:'#3f3f3f'
     }
 });
 

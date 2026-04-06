@@ -193,6 +193,53 @@ app.post('/api/courses/:id/modules', (req,res)=>{
     res.json(course);
 });
 
+// Route to edit module
+app.put('/api/courses/:id/modules/:moduleId', (req,res)=>{
+    const courseId=parseInt(req.params.id);
+    const moduleId=parseInt(req.params.moduleId);
+    const course=courses.find(c=>c.id===courseId);
+    if(!course){
+        return res.status(404).json({message:'Course not found'});
+    }
+
+    const module=course.modules.find(m=>m.moduleId===moduleId);
+    if(!module){
+        return res.status(404).json({message:'Module not found'});
+    }
+    const {title}=req.body;
+    if(title && title.trim()!==""){
+        module.title=title.trim();
+    }
+    res.json(module);
+})
+
+// Route to edit page
+app.put('api/courses/:id/modules/:moduleId/pages/:pageId', (req,res)=>{
+    const courseId=parseInt(req.params.id);
+    const moduleId=parseInt(req.params.moduleId);
+    const pageId=parseInt(req.params.pageId);
+    const {title}=req.body;
+
+    const course=courses.find(c=>c.id===courseId);
+    if(!module){
+        return res.status(404).json({message:'Module not found'});
+    }
+    const module=course.modules.find(m=>m.id===moduleId);
+    if(!module){
+        return res.status(404).json({message:'Module not found'});
+    }
+    const page=module.pages.find(p=>p.pageId===pageId);
+    if(!page){
+        return res.status(404).json({message:'Page not found'});
+    }
+    if(title && title.trim()){
+        page.title=title.trim();
+        res.json(page);
+    }else{
+        res.status(404).json({message:'Title is required.'});
+    }
+})
+
 // ---------------------------------------------------------------------
 // Dummy todo data
 const todos = [

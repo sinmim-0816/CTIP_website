@@ -2,10 +2,10 @@ import { View, Pressable, Image, Text, StyleSheet} from 'react-native';
 import {BookOpenText, CheckCheck, Timer, ClockAlert} from 'lucide-react-native'
 import ProgressBar from './ProgressBar.js';
 
-const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry,userType, progress})=>{
+const CourseCard=({id,imagePath, courseTitle, numModules,duration,expiry,userType, progress, onPress})=>{
     return (
         // Title need change to course ID later
-        <Pressable style={styles.card} onPress={()=> navigation.navigate('CourseDetails', {title: id})}>
+        <Pressable style={styles.card} onPress={onPress}>
             <Image source={imagePath} style={styles.courseImg} accessibilityLabel='Cover Photo of Course'/>
             <Text style={styles.CourseTitle}>{courseTitle}</Text>
             
