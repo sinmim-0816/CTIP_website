@@ -221,8 +221,8 @@ app.put('api/courses/:id/modules/:moduleId/pages/:pageId', (req,res)=>{
     const {title}=req.body;
 
     const course=courses.find(c=>c.id===courseId);
-    if(!module){
-        return res.status(404).json({message:'Module not found'});
+    if(!course){
+        return res.status(404).json({message:'Course not found'});
     }
     const module=course.modules.find(m=>m.id===moduleId);
     if(!module){
@@ -238,6 +238,28 @@ app.put('api/courses/:id/modules/:moduleId/pages/:pageId', (req,res)=>{
     }else{
         res.status(404).json({message:'Title is required.'});
     }
+})
+
+// Route to add Page
+app.post('/api/courses/:id/modules/:moduleId/pages', (req,res)=>{
+    const courseId=parseInt(req.params.id);
+    const moduleId=parseInt(req.params.moduleId);
+    const course=courses.find(c=>c.id===courseId);
+    if(!course){
+        return res.status(404).json({message:'Course not found'});
+    }
+    const module=course.modules.find(m=>m.moduleId===moduleId);
+    if(!module){
+        return res.status(404).json({message:'Module not found'});
+    }
+
+    const {pageId, title}= req.body;
+
+    const newPage={pageId:pageId, title:title && title.trim() !== "" ? title :title.trim()};
+
+    module.pages.push(newPage);
+
+    res.json(newPage);
 })
 
 // ---------------------------------------------------------------------
@@ -279,3 +301,6 @@ const PORT =5000;
 app.listen(PORT, ()=>{
     console.log(`Server running on http://localhost:${PORT}`);
 })
+
+
+// delete module n need confirmation dialog, delete page, change order, delete empty section

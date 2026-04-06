@@ -36,7 +36,7 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         ];
         const nextId=existingIds.length>0 ? Math.max(...existingIds) + 1 :1;
 
-        setNewSectons([...newSections, {moduleId:nextId, title:'', pages:[]}]);
+        setNewSectons([...newSections, {moduleId:nextId, title:'', pages:[{pageId:'1.0', title:'Introduction'}]}]);
     };
 
     const handleBlur=async(moduleId, value)=>{
@@ -86,48 +86,55 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         }
     };
 
-    const handleAddPage=(moduleId)=>{
-        setNewSectons(prev=>prev.map(m=>{
-            if(m.moduleId===moduleId){
-                const existingCount=m.pages.length;
-                const nextIndex=existingCount;
-                const newPageId=`${moduleId}.${nextIndex}`;
-
-                return{
-                    ...m, pages:[...m.pages, {pageId: newPageId, title:''}]
+    const handleAddPage = (moduleId) => {
+        // Helper to add a page to a module object
+        const addPageToModule = (m) => {
+            if (m.moduleId === moduleId) {
+                const existingCount = m.pages.length;
+                const newPageId = `${moduleId}.${existingCount}`;
+                return {
+                    ...m,
+                    pages: [...m.pages, { pageId: newPageId, title: '' }]
                 };
             }
             return m;
-        }
-        ));
+        };
+
+        // Update whichever state contains the module
+        setModules(prev => prev.map(addPageToModule));
+        setNewSectons(prev => prev.map(addPageToModule));
     };
 
-    const handlePageBlur=async(moduleId, pageId, value)=>{
-        setNewSectons(prev=> 
-            prev.map(m=>
-                m.moduleId===moduleId
-                ? {
-                    ...m, pages:m.pages.map(p=>
-                        p.pageId===pageId ? {...p,title:value} : p
-                    )
-                }
-                :m
-            )
-        );
+    const handlePageBlur = async (moduleId, pageId, value) => {
+        if (!value.trim()) return; 
 
-        const newPage={pageId, title:value};
-        try{
-            await fetch(`http://localhost:5000/api/courses/${courseId}/modules/${moduleId}/pages`, {
+        const updatePageInModule = (m) => {
+            if (m.moduleId === moduleId) {
+                return {
+                    ...m,
+                    pages: m.pages.map(p => p.pageId === pageId ? { ...p, title: value } : p)
+                };
+            }
+            return m;
+        };
+
+        setModules(prev => prev.map(updatePageInModule));
+        setNewSectons(prev => prev.map(updatePageInModule));
+
+        // API Call
+        try {
+            await fetch(`http://localhost:5000/api/courses/${course.id}/modules/${moduleId}/pages`, {
                 method: 'POST',
-                headers: {'Content-Type' : 'application/json'},
-                body: JSON.stringify(newPage),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pageId, title: value }),
             });
-        } catch(err){
+        } catch (err) {
             console.error('Failed to add page', err);
         }
     };
 
     const handlePageUpdate=async(moduleId, pageId, newTitle)=>{
+        setEditingItem(null);
         if(!newTitle.trim()){
             setEditingItem(null);
             return;
@@ -142,7 +149,7 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         }));
 
         try{
-            await fetch(`http://localhost:5000/api/courses/${courseId}/modules/${moduleId}/pages/${pageId}`,{
+            await fetch(`http://localhost:5000/api/courses/${course.id}/modules/${moduleId}/pages/${pageId}`,{
                 method:'PUT',
                 headers:{'Content-Type': 'application/json'},
                 body: JSON.stringify({title:newTitle}),
@@ -189,7 +196,8 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                                 if(editingItem?.id === module.moduleId){
                                     return;
                                 }
-                                handleSelect({type:'module', module}); toggleModule(module.moduleId);
+                                handleSelect({type:'module', module}); 
+                                toggleModule(module.moduleId);
                                 if(editable){
                                     setEditingItem({type:'module', id:module.moduleId});
                                 };
@@ -224,25 +232,46 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                             {expandedModule === module.moduleId ? <ChevronDown/> : <ChevronRight/>}
                         </Pressable>
                         
+                        {/* Show Expanded Pages */}
                         {expandedModule === module.moduleId && (
                             <View onMouseEnter={() => setHoveredItem({ type: 'page', moduleId: module.moduleId})}
                                 onMouseLeave={() => setHoveredItem(null)}>
+                                
                                 {module.pages.map(page => 
                                     page.title==='' ? (
-                                        <TextInput
-                                            key={page.pageId}
-                                            style={styles.section}
-                                            placeholder="Enter page title..."
-                                            placeholderTextColor="#8f8f8f"
-                                            defaultValue={page.title}
-                                            onBlur={(e) => handlePageBlur(module.moduleId, page.pageId, e.nativeEvent.text)}
-                                        />
+                                        <View style={styles.PageSection}>
+                                            <Text>{page.pageId}:</Text>
+                                            <TextInput
+                                                key={page.pageId}
+                                                style={styles.section}
+                                                placeholder="Enter page title..."
+                                                placeholderTextColor="#8f8f8f"
+                                                defaultValue={page.title}
+                                                onBlur={(e) => handlePageBlur(module.moduleId, page.pageId, e.nativeEvent.text)}
+                                            />
+                                        </View>
                                     ):(
                                         <Pressable
                                         key={page.pageId} style={[styles.pageItem, selectedItem?.type==='page' && selectedItem?.page.pageId === page.pageId && styles.selectedPage]}
-                                        onPress={() => handleSelect({type:'page', module,page})}
+                                        onPress={() => {
+                                            handleSelect({ type: 'page', module, page });
+                                            if (editable) {
+                                                setEditingItem({ type: 'page', moduleId: module.moduleId, pageId: page.pageId });
+                                            }
+                                        }}
                                         >
-                                            <Text>{page.pageId.toFixed(1)}: {page.title}</Text>
+                                            <Text>{typeof page.pageId === 'number' ? page.pageId.toFixed(1) : page.pageId}: {" "} 
+                                                {editable && editingItem?.type === 'page' && editingItem.pageId === page.pageId ? (
+                                                <TextInput
+                                                    style={styles.section}
+                                                    defaultValue={page.title}
+                                                    autoFocus
+                                                    onBlur={(e) => handlePageUpdate(module.moduleId, page.pageId, e.nativeEvent.text)}
+                                                />
+                                            ) : (
+                                                <Text>{page.title}</Text>
+                                            )}
+                                            </Text>
                                         </Pressable>
                                     )
                                 )}
@@ -337,10 +366,14 @@ const styles=StyleSheet.create({
         backgroundColor: '#f9f9f9',
         paddingVertical:6,
         paddingHorizontal:10,
-        marginTop:5
+        marginTop:5,
     },
     addPage:{
         color:'#3f3f3f'
+    },
+    PageSection:{
+        paddingHorizontal:30,
+        paddingVertical:6,
     }
 });
 
