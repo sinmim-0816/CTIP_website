@@ -109,6 +109,7 @@ const UserDashboard = () => {
                                     expiry={course.expiryDate}
                                     progress={courseProgress?.progress}
                                     userType={userType}
+                                    onPress={()=> navigation.navigate('Course Details', {id:course.id})}
                                 />
                                 );
                             }
