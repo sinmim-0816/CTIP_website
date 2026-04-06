@@ -30,6 +30,11 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         if(!editable){
             return;
         }
+        const hasPendingSection = newSections.some(s => s.title === "");
+        if (hasPendingSection) {
+            alert("Finish naming the current new section before adding another.");
+            return;
+        }
         const existingIds=[
             ...course.modules.map(m=>m.moduleId),
             ...newSections.map(s=>s.moduleId)
@@ -90,6 +95,10 @@ const OutlineBar=({course, onSelectPage, editable})=>{
         // Helper to add a page to a module object
         const addPageToModule = (m) => {
             if (m.moduleId === moduleId) {
+                const hasPendingPage = m.pages.some(p => p.title === "");
+                if (hasPendingPage) {
+                    return m;
+                }
                 const existingCount = m.pages.length;
                 const newPageId = `${moduleId}.${existingCount}`;
                 return {
@@ -202,11 +211,7 @@ const OutlineBar=({course, onSelectPage, editable})=>{
                     }
                     return m;
                 });
-
-            // Use the EXACT state setter names you defined at the top of your component
             setModules(prev => filterPage(prev));
-            
-            // Double check this spelling: was it setNewSections or setNewSectons?
             setNewSectons(prev => filterPage(prev)); 
 
             if (selectedItem?.page?.pageId === pageId) {
@@ -375,8 +380,8 @@ const OutlineBar=({course, onSelectPage, editable})=>{
 
 const styles=StyleSheet.create({
     outlinebar:{
-        maxWidth:'220px',
-        minHeight:'100vh',
+        maxWidth:'240px',
+        minHeight:'90vh',
         userSelect:'none',
         flex:1,
         backgroundColor:'white',
@@ -387,7 +392,7 @@ const styles=StyleSheet.create({
         fontWeight:'600',
         paddingLeft:20,
         paddingVertical:5,
-        paddingRight:40
+        paddingRight:70
     },
     moduleBlock:{
         flexDirection:'row',
@@ -458,7 +463,7 @@ const styles=StyleSheet.create({
     pageBlock:{
         flexDirection:'row',
         justifyContent:"space-between",
-        width:'150px'
+        width:'160px'
     }
 });
 
