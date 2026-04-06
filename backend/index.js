@@ -4,6 +4,7 @@ const cors=require('cors');
 const app=express();
 app.use(cors());
 app.use('/images', express.static('public'));
+app.use(express.json());
 
 // ---------------------------------------------------------------------
 // Dummy course data
@@ -167,6 +168,31 @@ app.get('/api/courses/:id', (req,res)=>{
     res.json(course);
 });
 
+// Route to get a single course's modules
+app.get('/api/course/:id/modules',(req,res)=>{
+    const course=courses.find(c=>c.id===parseInt(req.params.id));
+    if(!course){
+        return res.status(404).json({message:'Course not found.'});
+    }
+    res.json(course.modules);
+})
+
+// Route to add a new module to a course
+app.post('/api/courses/:id/modules', (req,res)=>{
+    const course=courses.find(c=> c.id ===parseInt(req.params.id));
+
+    if(!course){
+        return res.status(404).json({message:'Course not found'});
+    }
+
+    const {moduleId, title, pages}= req.body;
+
+    const newModule={moduleId, title, pages: pages || []};
+    course.modules.push(newModule);
+
+    res.json(course);
+});
+
 // ---------------------------------------------------------------------
 // Dummy todo data
 const todos = [
@@ -188,6 +214,7 @@ app.get('/api/userType', (req, res) => {
   res.json(userType);
 });
 
+// Correction: Later progress can add inside course api
 const progress = [
   { id: 1, course: 'Basic First Aid', progress: 0.7 },
   { id: 2, course: 'CPR Training', progress: 0.4 },

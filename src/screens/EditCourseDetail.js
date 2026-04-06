@@ -23,7 +23,7 @@ const EditCourseDetail = () => {
     return (
         <View style={styles.rowContainer}>
             {/* Outlinebar */}
-            <OutlineBar course={course} onSelectPage={setSelectedPage}/>
+            <OutlineBar course={course} onSelectPage={setSelectedPage} editable={true}/>
             {/* Content */}
             <ScrollView style={styles.container}>
                 {selectedPage?.type === 'page' ? (
