@@ -308,7 +308,11 @@ app.delete('/api/courses/:id/modules/:moduleId/pages/:pageId', (req, res) => {
 // Dummy todo data
 const todos = [
   { id: 1, title: "Finish Module 1", course: "Basic First Aid", date: "2026-06-30", completed: false },
-  { id: 2, title: "Finish Module 2", course: "CPR Training", date: "2027-08-05", completed: false }
+  { id: 2, title: "Finish Module 1", course: "CPR Training", date: "2027-06-30", completed: true },
+  { id: 3, title: "Finish Module 2", course: "Basic First Aid", date: "2026-08-05", completed: false },
+  { id: 4, title: "Finish Module 2", course: "CPR Training", date: "2027-08-06", completed: false },
+  { id: 5, title: "Finish Module 2", course: "CPR Training", date: "2027-08-06", completed: false },
+  { id: 6, title: "Finish Module 2", course: "CPR Training", date: "2027-08-06", completed: false }
 ];
 
 // Route to get all todos

@@ -6,8 +6,9 @@ import { Calendar } from 'react-native-calendars';
 
 // Import Components
 import CourseCard from '../components/CourseCard.js';
+import NavBar from '../components/NavBar.js';
 
-const UserDashboard = () => {
+const UserDashboard = ({ navigation }) => {
     const [courses, setCourses]=useState([]);
     const [selectedDate, setSelectedDate] = useState(null);
     const [todos, setTodos] = useState([]);
@@ -98,111 +99,118 @@ const UserDashboard = () => {
     }
 
     return(
-        <ScrollView style={styles.container}>
-            <View>
-                <Text style={styles.dashboardTitle}>Dashboard</Text>
-            </View>
-
-            <View style={styles.topRow}>
-                {/* Left side */}
-                <View style={styles.leftColumn}>
-                    <View style={styles.cardContainer}>
-                        {courses.map(course=>{
-                            const courseProgress = progressData.find(p => p.course === course.courseTitle);
-                            return(
-                                <CourseCard
-                                    key={course.id}
-                                    id={course.id}
-                                    imagePath={{uri:course.image}}
-                                    courseTitle={course.courseTitle}
-                                    numModules={course.numModules}
-                                    duration={course.duration}
-                                    expiry={course.expiryDate}
-                                    progress={courseProgress?.progress}
-                                    userType={userType}
-                                    onPress={()=> navigation.navigate('Course Details', {id:course.id})}
-                                />
-                                );
-                            }
-                        )}
-                    </View>
+        <View style={{ flex: 1 }}>
+            {/* <NavBar/> */}
+            <View style={styles.container}>
+                <View>
+                    <Text style={styles.dashboardTitle}>Dashboard</Text>
                 </View>
 
-                {/* Right side */}
-                <View style={styles.rightColumn}>
+                <View style={styles.topRow}>
+                    {/* Left side */}
+                    <ScrollView style={{ flex: 3.2 }} >
+                        <View style={styles.leftColumn}>
+                            <View style={styles.cardContainer}>
+                                {courses.map(course=>{
+                                    const courseProgress = progressData.find(p => p.course === course.courseTitle);
+                                    return(
+                                        <CourseCard
+                                            key={course.id}
+                                            id={course.id}
+                                            imagePath={{uri:course.image}}
+                                            courseTitle={course.courseTitle}
+                                            numModules={course.numModules}
+                                            duration={course.duration}
+                                            expiry={course.expiryDate}
+                                            progress={courseProgress?.progress}
+                                            userType={userType}
+                                            onPress={()=> navigation.navigate('Course Details', {id:course.id})}
+                                        />
+                                        );
+                                    }
+                                )}
+                            </View>
+                        </View> 
+                    </ScrollView>
 
-                    {/* Calendar */}
-                    <View style={styles.calendarContainer}>
-                        <Calendar
-                            onDayPress={(day) => {
-                                if(selectedDate === day.dateString){
-                                    setSelectedDate(null);
-                                } else {
-                                    setSelectedDate(day.dateString);
-                                }
-                            }}  
-                            markedDates={{
-                                [selectedDate]: { selected: true }
-                            }}
-                        />
-                    </View>
+                    {/* Right side */}
+                    <View style={styles.rightColumn}>
 
-                    {/* Todo tab for filter (All, Completed, Not completed)*/}
-                    <View style={styles.todoTab}>
-                        <Pressable onPress={() => setFilter("all")}>
-                            <Text style={filter === "all" ? styles.activeTab : styles.tab}>
-                                All
-                            </Text>
-                        </Pressable>
+                        {/* Calendar */}
+                        <View style={styles.calendarContainer}>
+                            <Calendar style={{height: 320}}
+                                onDayPress={(day) => {
+                                    if(selectedDate === day.dateString){
+                                        setSelectedDate(null);
+                                    } else {
+                                        setSelectedDate(day.dateString);
+                                    }
+                                }}  
+                                markedDates={{
+                                    [selectedDate]: { selected: true }
+                                }}
+                            />
+                        </View>
 
-                        <Pressable onPress={() => setFilter("completed")}>
-                            <Text style={filter === "completed" ? styles.activeTab : styles.tab}>
-                                Completed
-                            </Text>
-                        </Pressable>
+                        {/* Todo tab for filter (All, Completed, Not completed)*/}
+                        <View style={styles.todoTab}>
+                            <Pressable onPress={() => setFilter("all")}>
+                                <Text style={filter === "all" ? styles.activeTab : styles.tab}>
+                                    All
+                                </Text>
+                            </Pressable>
 
-                        <Pressable onPress={() => setFilter("pending")}>
-                            <Text style={filter === "pending" ? styles.activeTab : styles.tab}>
-                                Not Completed
-                            </Text>
-                        </Pressable>
-                    </View>
+                            <Pressable onPress={() => setFilter("completed")}>
+                                <Text style={filter === "completed" ? styles.activeTab : styles.tab}>
+                                    Completed
+                                </Text>
+                            </Pressable>
 
-                    {/* Todo list */}
-                    <View style={styles.todoList}>
-                        <View style={styles.todoHeader}>
-                            <Text style={styles.todoListTitle}>Todo List</Text>
-
-                            <Pressable onPress={() => setShowModal(true)}>
-                                <ListPlus size={20} />
+                            <Pressable onPress={() => setFilter("pending")}>
+                                <Text style={filter === "pending" ? styles.activeTab : styles.tab}>
+                                    Not Completed
+                                </Text>
                             </Pressable>
                         </View>
-                        {filteredTodos.length === 0 ? (
-                            <Text>No todos</Text>
-                        ) : (
-                            filteredTodos.map(todo => (
-                                <View key={todo.id} style={styles.todoItem}>
-                                    <View style={styles.todoRow}>
-                                        <Checkbox
-                                            value={todo.completed}
-                                            onValueChange={() => toggleTodo(todo.id)}
-                                        />
-                                        <View style={{flex: 1}}>
-                                            <Text style={styles.todoTitle}>{todo.title}</Text>
-                                            <Text style={styles.todoCourse}>{todo.course} - {todo.date}</Text>
-                                        </View>
 
-                                        <Pressable onPress={() => openEdit(todo)}>
-                                            <ChevronRight size={20} />
-                                        </Pressable>
-                                    </View>
-                                </View>
-                            ))
-                        )}
+                        {/* Todo list */}
+                        <View style={styles.todoList}>
+                            <View style={styles.todoHeader}>
+                                <Text style={styles.todoListTitle}>Todo List</Text>
+
+                                <Pressable onPress={() => setShowModal(true)}>
+                                    <ListPlus size={20} />
+                                </Pressable>
+                            </View>
+                            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={true}>
+                                {filteredTodos.length === 0 ? (
+                                    <Text>No todos</Text>
+                                ) : (
+                                    filteredTodos.map(todo => (
+                                        <View key={todo.id} style={styles.todoItem}>
+                                            <View style={styles.todoRow}>
+                                                <Checkbox
+                                                    value={todo.completed}
+                                                    onValueChange={() => toggleTodo(todo.id)}
+                                                />
+                                                <View style={{flex: 1}}>
+                                                    <Text style={styles.todoTitle}>{todo.title}</Text>
+                                                    <Text style={styles.todoCourse}>{todo.course} - {todo.date}</Text>
+                                                </View>
+
+                                                <Pressable onPress={() => openEdit(todo)}>
+                                                    <ChevronRight size={20} />
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                    ))
+                                )}
+                            </ScrollView>
+                        </View>
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -225,26 +233,34 @@ const styles = StyleSheet.create({
         gap:30,
     },
     topRow:{
+        flex: 1,
         flexDirection: 'row',
         gap: 20,
+        alignItems: 'stretch',
     },
     leftColumn:{
-        flex: 3,
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 20,
     },
     rightColumn:{
-        flex: 1,
+        flex: 0.8,
         flexDirection: 'column',
-        gap: 20,
+        maxHeight: '100%',
     },
     calendarContainer:{
         width: '100%',
-        backgroundColor: '#f5f5f5',
-        borderRadius: 10,
-        padding: 5,
+        borderRadius: 20,
         marginBottom: 10,
+        padding: 3,
+        overflow: 'hidden',
+    },
+    todoList:{
+        flex: 1,
+        backgroundColor: '#9ee5a375',
+        borderRadius: 10,
+        padding: 15,
+        maxHeight: '100%',
     },
     todoListTitle:{
         fontSize: 18,
@@ -261,41 +277,37 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 10,
     },
-    todoList:{
-        flex: 1,
-        backgroundColor: '#9ee5a375',
-        borderRadius: 10,
-        padding: 15,
-        overflow: 'scroll',
-    },
     todoItem:{
-        paddingVertical: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
         backgroundColor: '#ffffff',
         borderRadius: 10,
-        padding: 15,
-        marginVertical: 15
+        marginVertical: 6,
+        marginRight: 10,
     },
     todoTitle:{
         fontSize: 16,
+        marginLeft: 3
     },
     todoCourse:{
         color: '#888888',
         fontSize: 12,
+        marginLeft: 3
     },
     todoTab:{
         flexDirection: 'row',
         justifyContent: 'center',
         marginBottom: 10,
-        gap: 37
+        gap: 20
     },
     tab:{
         fontSize: 14,
         color: '#888',
         backgroundColor: '#9ee5a375',
-        padding: 10,
-        paddingHorizontal: 20,
+        padding: 5,
+        paddingHorizontal: 15,
         borderRadius: 50,
         borderBottomWidth: 2,
         borderBottomColor: '#888'
@@ -306,8 +318,8 @@ const styles = StyleSheet.create({
         color: '#000',
         borderBottomWidth: 2,
         backgroundColor: '#9ee5a375',
-        padding: 10,
-        paddingHorizontal: 20,
+        padding: 5,
+        paddingHorizontal: 15,
         borderRadius: 50
     }
 });
