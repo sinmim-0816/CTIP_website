@@ -13,6 +13,7 @@ const UserDashboard = () => {
     const [todos, setTodos] = useState([]);
     const [userType, setUserType] = useState('');
     const [progressData, setProgressData] = useState([]);
+    const [filter, setFilter] = useState("all");
     
     // Fetch user type
     useEffect(() => {
@@ -79,12 +80,22 @@ const UserDashboard = () => {
         );
     };
 
-    // Filter todos by selected date
-    const filteredTodos = selectedDate
-        ? todos.filter(todo =>
+    // Filter todos based on selected date and status
+    let filteredTodos = todos;
+
+    // Filter by date
+    if (selectedDate) {
+        filteredTodos = filteredTodos.filter(todo =>
             new Date(todo.date).toDateString() === new Date(selectedDate).toDateString()
-        )
-        : todos;
+        );
+    }
+
+    // Filter by status
+    if (filter === "completed") {
+        filteredTodos = filteredTodos.filter(todo => todo.completed);
+    } else if (filter === "pending") {
+        filteredTodos = filteredTodos.filter(todo => !todo.completed);
+    }
 
     return(
         <ScrollView style={styles.container}>
@@ -119,6 +130,8 @@ const UserDashboard = () => {
 
                 {/* Right side */}
                 <View style={styles.rightColumn}>
+
+                    {/* Calendar */}
                     <View style={styles.calendarContainer}>
                         <Calendar
                             onDayPress={(day) => {
@@ -127,13 +140,35 @@ const UserDashboard = () => {
                                 } else {
                                     setSelectedDate(day.dateString);
                                 }
-                            }}
+                            }}  
                             markedDates={{
                                 [selectedDate]: { selected: true }
                             }}
                         />
                     </View>
 
+                    {/* Todo tab for filter (All, Completed, Not completed)*/}
+                    <View style={styles.todoTab}>
+                        <Pressable onPress={() => setFilter("all")}>
+                            <Text style={filter === "all" ? styles.activeTab : styles.tab}>
+                                All
+                            </Text>
+                        </Pressable>
+
+                        <Pressable onPress={() => setFilter("completed")}>
+                            <Text style={filter === "completed" ? styles.activeTab : styles.tab}>
+                                Completed
+                            </Text>
+                        </Pressable>
+
+                        <Pressable onPress={() => setFilter("pending")}>
+                            <Text style={filter === "pending" ? styles.activeTab : styles.tab}>
+                                Not Completed
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    {/* Todo list */}
                     <View style={styles.todoList}>
                         <View style={styles.todoHeader}>
                             <Text style={styles.todoListTitle}>Todo List</Text>
@@ -204,7 +239,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         gap: 20,
     },
-    calendarContainer: {
+    calendarContainer:{
         width: '100%',
         backgroundColor: '#f5f5f5',
         borderRadius: 10,
@@ -216,7 +251,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontWeight: 'bold',
     },
-    todoHeader: {
+    todoHeader:{
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -228,14 +263,18 @@ const styles = StyleSheet.create({
     },
     todoList:{
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#9ee5a375',
         borderRadius: 10,
-        padding: 10,
+        padding: 15,
+        overflow: 'scroll',
     },
     todoItem:{
         paddingVertical: 5,
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
+        backgroundColor: '#ffffff',
+        borderRadius: 10,
+        padding: 15,
         marginVertical: 15
     },
     todoTitle:{
@@ -244,6 +283,32 @@ const styles = StyleSheet.create({
     todoCourse:{
         color: '#888888',
         fontSize: 12,
+    },
+    todoTab:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 10,
+        gap: 37
+    },
+    tab:{
+        fontSize: 14,
+        color: '#888',
+        backgroundColor: '#9ee5a375',
+        padding: 10,
+        paddingHorizontal: 20,
+        borderRadius: 50,
+        borderBottomWidth: 2,
+        borderBottomColor: '#888'
+    },
+    activeTab:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#000',
+        borderBottomWidth: 2,
+        backgroundColor: '#9ee5a375',
+        padding: 10,
+        paddingHorizontal: 20,
+        borderRadius: 50
     }
 });
 

@@ -304,6 +304,7 @@ app.delete('/api/courses/:id/modules/:moduleId/pages/:pageId', (req, res) => {
 });
 
 // ---------------------------------------------------------------------
+
 // Dummy todo data
 const todos = [
   { id: 1, title: "Finish Module 1", course: "Basic First Aid", date: "2026-06-30", completed: false },
@@ -314,6 +315,7 @@ const todos = [
 app.get('/api/todos', (req, res) => {
   res.json(todos);
 });
+
 // ---------------------------------------------------------------------
 
 
@@ -330,7 +332,7 @@ const progress = [
   { id: 2, course: 'CPR Training', progress: 0.4 },
 ];
 
-// Route to get all todos
+// Route to get all progress
 app.get('/api/progress', (req, res) => {
   res.json(progress);
 });

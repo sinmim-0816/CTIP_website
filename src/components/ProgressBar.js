@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     height: '100%',
-    backgroundColor: '#0AF',
+    backgroundColor: '#ffb116',
     borderRadius: 10,
   },
   label: {
@@ -32,8 +32,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#000000',
   },
 });
 
